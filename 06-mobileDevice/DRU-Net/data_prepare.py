@@ -2,10 +2,15 @@ import os
 
 import cv2
 import numpy as np
+import random
 
 train_x_dir = './data/val_blur'
 train_y_dir = './data/val_sharp'
 test_x_dir = './data/test_blur'
+
+input_x = 240
+input_y = 320
+
 
 def get_train_files():
     train_folder = os.listdir(train_x_dir)
@@ -22,6 +27,7 @@ def get_train_files():
                 train_y_files.append(train_y_file)
     return train_x_files, train_y_files
 
+
 def get_test_files():
     test_folder = os.listdir(train_x_dir)
     test_x_files = []
@@ -34,6 +40,7 @@ def get_test_files():
                 test_x_files.append(test_x_file)
     return test_x_files
 
+
 def get_val_data(val_x_files, val_y_files):
     batch_x = []
     batch_y = []
@@ -44,17 +51,25 @@ def get_val_data(val_x_files, val_y_files):
 
 
 def train_datagen(train_x_files, train_y_files,
-                  batch_size=8):
+                  file_size=1):
     while (True):
-        for i in range(len(train_x_files)):
+        idx = list(range(len(train_x_files)))
+        random.shuffle(idx)
+        for i in idx:
             batch_x = []
             batch_y = []
-            for j in range(batch_size):
-                batch_x.append(cv2.imread(filename=train_x_files[i], flags=cv2.IMREAD_GRAYSCALE)/255.0)
-                batch_y.append(cv2.imread(filename=train_y_files[i], flags=cv2.IMREAD_GRAYSCALE)/255.0)
+            for j in range(file_size):
+                clipImg(cv2.imread(filename=train_x_files[i], flags=cv2.IMREAD_GRAYSCALE) / 255.0, batch_x)
+                clipImg(cv2.imread(filename=train_y_files[i], flags=cv2.IMREAD_GRAYSCALE) / 255.0, batch_y)
             batch_x = np.array(batch_x)
             batch_y = np.array(batch_y)
             yield batch_x, batch_y
+
+
+def clipImg(img, batch):
+    for i in range(0, img.shape[0] - input_x + 1, input_x):
+        for j in range(0, img.shape[1] - input_y + 1, input_y):
+            batch.append(img[i:i + input_x,j:j + input_y])
 
 
 if __name__ == '__main__':

@@ -44,13 +44,13 @@ if __name__ == '__main__':
     # compile the model
     model.compile(optimizer=Adam(), loss=['mse'], metrics=[mean_squared_error, peak_sifnal_to_noise])
     checkpointer = keras.callbacks.ModelCheckpoint('./models/model_{epoch:03d}.hdf5',
-                                                   verbose=1, save_weights_only=False, save_freq=1000)
-    batch_size = 8
+                                                   verbose=1, save_weights_only=False)
+    file_size = 8
     files_len = len(test_x_files)
     test_len = int(files_len*0.95)
     history = model.fit(
-        data_prepare.train_datagen(test_x_files[:test_len], test_y_files[:test_len], batch_size),
-        steps_per_epoch=test_len // batch_size,
+        data_prepare.train_datagen(test_x_files[:test_len], test_y_files[:test_len], file_size),
+        steps_per_epoch=test_len // file_size,
         epochs=10,
         validation_data=data_prepare.get_val_data(test_x_files[test_len:], test_y_files[test_len:]),
         callbacks=[checkpointer])

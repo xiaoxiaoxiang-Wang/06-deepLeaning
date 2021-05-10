@@ -57,11 +57,11 @@ if __name__ == '__main__':
     #     x = torch.tanh(a @ x)
     # print(x.mean(), x.std())
 
-    # x = torch.randn(512)
-    # for i in range(100):
-    #     a = xavier(512, 512)
-    #     x = torch.tanh(a @ x)
-    # print(x.mean(), x.std())
+    x = torch.randn(512)
+    for i in range(100):
+        a = xavier(512, 512)
+        x = torch.tanh(a @ x)
+    print(x.mean(), x.std())
 
     # # y和 a x 的均值方差的关系
     # mean, var = 0., 0.
