@@ -6,17 +6,17 @@ import numpy as np
 from skimage.measure import compare_psnr
 from tensorflow import keras
 
-import data_prepare
+import data_prepare_fault
 
 model_path = "./models/model.h5"
 
 if __name__ == "__main__":
     if os.path.exists(model_path):
         model = keras.models.load_model(model_path, compile=False)
-        test_x_files, test_y_files = data_prepare.get_train_files()
+        test_x_files, test_y_files = data_prepare_fault.get_train_files()
         files_len = len(test_x_files)
         test_len = int(files_len * 0.95)
-        var_x,var_y = data_prepare.get_val_data(test_x_files[test_len:], test_y_files[test_len:])
+        var_x,var_y = data_prepare_fault.get_val_data(test_x_files[test_len:], test_y_files[test_len:])
         print(var_x.shape)
         for i in range(var_x.shape[0]):
             input_img = var_x[i]

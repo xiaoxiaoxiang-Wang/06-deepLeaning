@@ -6,7 +6,7 @@ import tensorflow.keras.backend as K
 from tensorflow import keras
 from tensorflow.keras.optimizers import Adam
 
-import data_prepare
+import data_prepare_fault
 from network import drunet
 
 model_dir = './models'
@@ -31,7 +31,7 @@ def get_model_from_network(channel):
 
 
 if __name__ == '__main__':
-    test_x_files, test_y_files = data_prepare.get_train_files()
+    test_x_files, test_y_files = data_prepare_fault.get_train_files()
     if not os.path.exists(model_dir):
         os.makedirs(model_dir)
     if os.path.exists(model_path):
@@ -49,10 +49,10 @@ if __name__ == '__main__':
     files_len = len(test_x_files)
     test_len = int(files_len*0.95)
     history = model.fit(
-        data_prepare.train_datagen(test_x_files[:test_len], test_y_files[:test_len], file_size),
+        data_prepare_fault.train_datagen(test_x_files[:test_len], test_y_files[:test_len], file_size),
         steps_per_epoch=test_len // file_size,
         epochs=10,
-        validation_data=data_prepare.get_val_data(test_x_files[test_len:], test_y_files[test_len:]),
+        validation_data=data_prepare_fault.get_val_data(test_x_files[test_len:], test_y_files[test_len:]),
         callbacks=[checkpointer])
     plt.plot(history.history['loss'])
     plt.title('model accuracy')
